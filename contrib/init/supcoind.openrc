@@ -1,0 +1,86 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/voyacoin/.voyacoin" ]; then
+	VOYACOIND_DEFAULT_DATADIR="/var/lib/voyacoin/.voyacoin"
+else
+	VOYACOIND_DEFAULT_DATADIR="/var/lib/voyacoind"
+fi
+
+VOYACOIND_CONFIGFILE=${VOYACOIND_CONFIGFILE:-/etc/voyacoin/voyacoin.conf}
+VOYACOIND_PIDDIR=${VOYACOIND_PIDDIR:-/var/run/voyacoind}
+VOYACOIND_PIDFILE=${VOYACOIND_PIDFILE:-${VOYACOIND_PIDDIR}/voyacoind.pid}
+VOYACOIND_DATADIR=${VOYACOIND_DATADIR:-${VOYACOIND_DEFAULT_DATADIR}}
+VOYACOIND_USER=${VOYACOIND_USER:-voyacoin}
+VOYACOIND_GROUP=${VOYACOIND_GROUP:-voyacoin}
+VOYACOIND_BIN=${VOYACOIND_BIN:-/usr/bin/voyacoind}
+
+name="Voyacoin Core Daemon"
+description="Voyacoin crypto-currency p2p network daemon"
+
+command="/usr/bin/voyacoind"
+command_args="-pid=\"${VOYACOIND_PIDFILE}\" \
+		-conf=\"${VOYACOIND_CONFIGFILE}\" \
+		-datadir=\"${VOYACOIND_DATADIR}\" \
+		-daemon \
+		${VOYACOIND_OPTS}"
+
+required_files="${VOYACOIND_CONFIGFILE}"
+start_stop_daemon_args="-u ${VOYACOIND_USER} \
+			-N ${VOYACOIND_NICE:-0} -w 2000"
+pidfile="${VOYACOIND_PIDFILE}"
+retry=60
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${VOYACOIND_USER}:${VOYACOIND_GROUP}" \
+	"${VOYACOIND_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${VOYACOIND_USER}:${VOYACOIND_GROUP}" \
+	"${VOYACOIND_PIDDIR}"
+
+	checkpath -f \
+	-o ${VOYACOIND_USER}:${VOYACOIND_GROUP} \
+	-m 0660 \
+	${VOYACOIND_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${VOYACOIND_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run voyacoind."
+		eerror "The setting must appear in ${VOYACOIND_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following"
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is also recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"Voyacoin Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

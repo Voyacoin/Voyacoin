@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Voyacoin
+Comment=Voyacoin P2P Cryptocurrency
+Comment[fr]=Voyacoin, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Voyacoin, eşten eşe kriptografik sanal para birimi
+Exec=voyacoin-qt %u
+Terminal=false
+Type=Application
+Icon=voyacoin128
+MimeType=x-scheme-handler/voyacoin;
+Categories=Office;Finance;

@@ -1,0 +1,27 @@
+# /etc/conf.d/voyacoind: config file for /etc/init.d/voyacoind
+
+# Config file location
+#VOYACOIND_CONFIGFILE="/etc/voyacoin/voyacoin.conf"
+
+# What directory to write pidfile to?  (created and owned by $VOYACOIND_USER)
+#VOYACOIND_PIDDIR="/var/run/voyacoind"
+
+# What filename to give the pidfile
+#VOYACOIND_PIDFILE="${VOYACOIND_PIDDIR}/voyacoind.pid"
+
+# Where to write voyacoind data (be mindful that the blockchain is large)
+#VOYACOIND_DATADIR="/var/lib/voyacoind"
+
+# User and group to own voyacoind process
+#VOYACOIND_USER="voyacoin"
+#VOYACOIND_GROUP="voyacoin"
+
+# Path to voyacoind executable
+#VOYACOIND_BIN="/usr/bin/voyacoind"
+
+# Nice value to run voyacoind under
+#VOYACOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+VOYACOIND_OPTS="-disablewallet"
+

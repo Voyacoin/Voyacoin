@@ -1,0 +1,6 @@
+usr/local/bin/voyacoin-qt usr/bin
+share/pixmaps/voyacoin32.xpm usr/share/pixmaps
+share/pixmaps/voyacoin16.xpm usr/share/pixmaps
+share/pixmaps/voyacoin128.png usr/share/pixmaps
+debian/voyacoin-qt.desktop usr/share/applications
+debian/voyacoin-qt.protocol usr/share/kde4/services/

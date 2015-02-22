@@ -1,0 +1,5 @@
+Building Voyacoin
+
+See doc/build-*.md for instructions on building voyacoind,
+the intended-for-services, no-graphical-interface, reference
+implementation of Voyacoin.
